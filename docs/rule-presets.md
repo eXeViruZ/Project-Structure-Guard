@@ -42,7 +42,7 @@ Based on Epic's Lyra sample project. Includes rules tailored to Lyra's specific 
 
 > **Warning:** Loading a preset **replaces** your current naming and folder rules. Export your current rules first if you want to keep them.
 
-1. Open the PSG window → **Validation** tab
+1. Open the PSG window (Tools → Project Structure Guard) → Validation tab
 2. Click **Epic Official**, **Allar Style Guide**, or **Lyra**
 3. Rules are applied immediately
 
