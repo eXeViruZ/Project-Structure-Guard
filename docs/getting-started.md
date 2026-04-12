@@ -44,7 +44,7 @@ You will see:
 
 Instead of configuring rules manually, load a built-in preset:
 
-1. Open the PSG window: **Window → Project Structure Guard**
+1. Open the PSG window: **Tools → Project Structure Guard**
 2. Click one of the preset buttons at the top:
    - **Epic Official** — Follows Epic's naming conventions
    - **Allar Style Guide** — Community standard by Michael Allar
