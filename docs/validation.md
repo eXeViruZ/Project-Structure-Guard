@@ -6,7 +6,7 @@ The Validation tab is the primary interface for checking your project's asset na
 
 ## Scanning
 
-Open the PSG window (**Window → Project Structure Guard**) and select the **Validation** tab.
+Open the PSG window (Tools → Project Structure Guard) and select the **Validation** tab.
 
 Three scan modes are available:
 
