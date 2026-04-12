@@ -26,7 +26,7 @@ Project Structure Guard enforces consistent naming conventions and folder struct
 2. Enable it in **Edit → Plugins → Project Structure Guard**
 3. Open **Edit → Project Settings → Project → Project Structure Guard**
 4. Load a preset (Epic Official, Allar, or Lyra) or configure your own rules
-5. Open the PSG window: **Window → Project Structure Guard**
+5. Open the PSG window: **Tools → Project Structure Guard**
 6. Click **Scan Whole Project** — review and fix violations
 
 For detailed setup, see [Getting Started](docs/getting-started.md).
