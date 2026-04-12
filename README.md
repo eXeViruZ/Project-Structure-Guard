@@ -56,7 +56,7 @@ For detailed setup, see [Getting Started](docs/getting-started.md).
 
 ## Support
 
-- **Discord:** [Project Structure Guard](https://discord.gg/wWtgwd9APR)
+- **Discord:** [Hanke Unreal Tools](https://discord.gg/vgpmnN6nCR)
 - **GitHub Issues:** [eXeViruZ/Project-Structure-Guard](https://github.com/eXeViruZ/Project-Structure-Guard/issues)
 
 ---
