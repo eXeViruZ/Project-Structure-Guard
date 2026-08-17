@@ -1,99 +1,133 @@
 # 07 — CI/CD Commandlet
 
+> This page describes **Project Structure Guard v1.2.0 for Unreal Engine 5.8**.
+
 ## Overview
 
-Project Structure Guard ships with a headless commandlet that runs validation without opening the Unreal Editor UI.
+Project Structure Guard includes a headless validation commandlet for CI/CD and automated project checks.
 
-This allows you to integrate PSG into CI/CD pipelines (GitHub Actions, Jenkins, TeamCity, etc.) and fail builds automatically when violations are detected.
+The commandlet can:
+
+- Scan project content without opening the normal editor UI
+- Export CSV and JSON reports
+- Fail on Error-severity findings
+- Fail on Warning findings
+- Fail only when findings are **New** relative to the configured baseline
 
 ---
 
 ## Basic Usage
 
 ```bash
-UnrealEditor.exe "[YourProject].uproject" -run=PSGValidate
+UnrealEditor-Cmd.exe "[YourProject].uproject" -run=PSGValidate
 ```
 
+Use the command-line executable appropriate for your Unreal Engine installation and platform.
+
 ---
 
-## All Options
+## Main Options
 
 | Flag | Description |
-|------|-------------|
-| `-outputjson=<path>` | Write JSON report to the specified file path |
-| `-outputcsv=<path>` | Write CSV report to the specified file path |
-| `-failonerror` | Exit with code 1 if any Error-severity issues are found |
-| `-failonwarning` | Exit with code 1 if any issues are found (errors + warnings) |
-| `-scanpath=<path>` | Scan only assets under this package path (default: `/Game`) |
-| `-quiet` | Suppress per-issue log output |
+|---|---|
+| `-outputjson=<path>` | Write a JSON validation report to the specified path |
+| `-outputcsv=<path>` | Write a CSV validation report to the specified path |
+| `-failonerror` | Return a failing exit code when Error-severity findings are present |
+| `-failonwarning` | Return a failing exit code when Warning/Error findings trigger the policy |
+| `-failonnew` | Return a failing exit code when New baseline-aware findings are present |
+| `-scanpath=<path>` | Limit the scan to a package path such as `/Game/Characters` |
+| `-quiet` | Reduce per-finding commandlet log output |
 
 ---
 
-## Exit Codes
+## Baseline-Aware `-failonnew`
 
-| Code | Meaning |
-|------|---------|
-| `0` | No issues found (or only warnings without `-failonwarning`) |
-| `1` | Issues found (with `-failonerror` or `-failonwarning`) |
-| `2` | Internal error |
+`-failonnew` is intended for teams that want CI to block newly introduced structural problems without failing continuously because of already accepted legacy findings.
+
+Typical workflow:
+
+1. Create or update the accepted Project Structure Guard baseline in the editor.
+2. Keep the project-relative baseline file in source control where appropriate.
+3. Run the commandlet with `-failonnew` in CI.
+4. Existing accepted findings remain distinguishable from newly introduced findings.
+5. CI fails when New findings trigger the policy.
+
+If no applicable baseline classification is available, review the commandlet output and baseline configuration before relying on `-failonnew` as a gate.
 
 ---
 
 ## Examples
 
-**Basic scan, fail on errors:**
+### Fail on errors
+
 ```bash
-UnrealEditor.exe "MyGame.uproject" -run=PSGValidate -failonerror
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate -failonerror
 ```
 
-**Export JSON report, scan subfolder only:**
+### Export JSON and CSV
+
 ```bash
-UnrealEditor.exe "MyGame.uproject" -run=PSGValidate \
-  -outputjson="Reports/psg_report.json" \
-  -scanpath=/Game/Characters
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate \
+  -outputjson="Saved/PSGReports/psg.json" \
+  -outputcsv="Saved/PSGReports/psg.csv"
 ```
 
-**Full CI run — JSON + CSV, fail on any issue, quiet log:**
+### Baseline-aware CI validation
+
 ```bash
-UnrealEditor.exe "MyGame.uproject" -run=PSGValidate \
-  -outputjson="Reports/psg.json" \
-  -outputcsv="Reports/psg.csv" \
-  -failonwarning \
-  -quiet
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate \
+  -outputjson="Saved/PSGReports/psg.json" \
+  -outputcsv="Saved/PSGReports/psg.csv" \
+  -failonnew \
+  -quiet \
+  -unattended \
+  -nop4
+```
+
+### Scan a subfolder
+
+```bash
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate \
+  -scanpath=/Game/Characters \
+  -failonerror
 ```
 
 ---
 
-## CSV Report Format
+## Reports
 
-Columns:
+The v1.2 CSV/JSON reports contain richer validation context than earlier releases, including information such as:
 
-```
-Severity, Asset, PackagePath, Type, Description, SuggestedFix, AutoFixable
-```
+- Severity
+- Asset/path data
+- Issue type and description
+- Suggested fix information
+- Auto-fixability
+- Baseline/issue state
+- Rule and issue identity
+- Expected and actual values
+- Protection information
+- Block reasons
 
-Output path when no `-outputcsv` is specified:
-
-```
-[ProjectDir]/Saved/PSGReports/PSG_Report_YYYYMMDD_HHMMSS.csv
-```
+Use the machine-readable report formats for CI artifacts, review, or downstream tooling.
 
 ---
 
-## GitHub Actions Example
+## Exit Behavior
 
-```yaml
-- name: Run PSG Validation
-  run: |
-    "$UE_PATH/UnrealEditor.exe" "$PROJECT" \
-      -run=PSGValidate \
-      -outputjson=psg_report.json \
-      -failonerror \
-      -quiet
+A non-zero result can be an expected policy outcome rather than an internal plugin failure.
 
-- name: Upload PSG Report
-  uses: actions/upload-artifact@v3
-  with:
-    name: psg-report
-    path: psg_report.json
-```
+For example, a run with `-failonnew` should return a failing result when New findings are detected. CI should treat that as a validation gate failure and surface the generated report/log to the team.
+
+Internal commandlet errors should be investigated separately from policy-driven validation failures.
+
+---
+
+## CI Recommendations
+
+- Keep the Unreal Engine version used by CI aligned with the plugin package.
+- For v1.2.0, run the commandlet with **UE 5.8**.
+- Store baseline/rule configuration in source control when using shared team policies.
+- Archive the JSON/CSV report when a validation gate fails.
+- Prefer `-failonnew` when adopting PSG in an existing project with accepted legacy violations.
+- Re-run the same command locally when diagnosing CI-only differences.
