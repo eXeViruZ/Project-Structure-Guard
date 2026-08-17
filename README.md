@@ -68,8 +68,8 @@ For the full workflow, start with [Getting Started](docs/02_Getting_Started.md).
 
 | Plugin Version | Unreal Engine | Status |
 |---|---|---|
-| v1.2.0 | UE 5.8 | Current release line |
-| v1.1.1 | UE 5.7 | Legacy supported release for UE 5.7 |
+| v1.2.0 | UE 5.8 | Current documentation target |
+| v1.1.1 | UE 5.7 | Supported UE 5.7 release |
 
 The v1.2 documentation describes the UE 5.8 release. Some workflows and UI elements documented here are not present in v1.1.1.
 
