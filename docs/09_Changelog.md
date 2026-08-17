@@ -6,7 +6,7 @@ All notable changes to Project Structure Guard are documented here.
 
 ---
 
-## [1.2.0] — 2026-08-17
+## [1.2.0] — Pending Fab release
 
 ### Added
 
