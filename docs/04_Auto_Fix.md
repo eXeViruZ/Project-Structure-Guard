@@ -10,11 +10,18 @@ The v1.2 workflow emphasizes preflight validation so blocked or conflicting oper
 
 ---
 
-## Rename and Move Workflows
+## Rename and Move Actions
 
-Supported actions include selected-item and bulk workflows for fixable naming and folder violations.
+The current v1.2 Validation UI exposes these actions:
 
-Use the preview whenever multiple structural changes are planned. The preview lets you review which operations are safe to execute and which ones require attention first.
+| Group | Action | Purpose |
+|---|---|---|
+| **Rename** | **Fix Selected** | Prepare naming fixes for the selected applicable findings |
+| **Rename** | **Fix All** | Prepare naming fixes for the applicable findings in the active filtered result set |
+| **Move** | **Move Selected** | Prepare folder moves for the selected applicable findings |
+| **Move** | **Move All** | Prepare folder moves for the applicable findings in the active filtered result set |
+
+`Fix All` and `Move All` do not blindly force every visible finding through. Planned operations are evaluated by the preview/preflight workflow before execution.
 
 ---
 
@@ -80,7 +87,7 @@ Use Project Structure Guard's redirector cleanup workflow when appropriate to ru
 
 1. Run validation for the required scope.
 2. Use Search/filters to isolate the findings you intend to change.
-3. Select the supported rename or move workflow.
+3. Use **Fix Selected / Fix All** for naming violations or **Move Selected / Move All** for folder violations.
 4. Review every item in Bulk Preview 2.0.
 5. Resolve Blocked or Conflict items instead of forcing them through.
 6. Execute only the Ready operations you intend to apply.
