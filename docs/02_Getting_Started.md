@@ -1,121 +1,58 @@
-# 02 — Getting Started
+# 02 - Getting Started
 
-> This page describes **Project Structure Guard v1.2.0 for Unreal Engine 5.8**. Unreal Engine 5.7 remains supported through v1.1.1, but some v1.2 workflows described here are not available there.
+> **v1.3.0 documentation preview**, UE 5.8. Until the new version is publicly available, v1.2.0 remains the active Fab release.
 
-## UI Overview
+## The Six Main Tabs
 
-Project Structure Guard is organized around three main workflow areas:
-
-| Area | Purpose |
+| Tab | Purpose |
 |---|---|
-| **Validation** | Scan project content, search/filter findings, inspect Result Details, and preview/apply supported fixes |
-| **Unused Assets** | Find unused content and manage Quarantine, Restore, and guarded Permanent Delete workflows |
-| **Rules** | Enable/disable, reorder, search/filter, test, import, and export project rules |
+| **Validation** | Scan project content, filter results, inspect findings, review baselines and preview safe fixes |
+| **Unused Assets** | Find possible unused assets, manage Quarantine and Restore, and review guarded deletion |
+| **Rules** | Search/reorder/toggle global rules, test a rule and preview global toggle impact |
+| **Inspector** | Explain effective scoped policies and rules for one asset or folder |
+| **Policy Diagnostics** | Read-only configuration warnings and informational notes |
+| **Adopt Project** | Guided whole-project review and optional initial baseline setup |
 
----
+The window uses local, per-user/per-project sizing for supported Validation, Rules and Unused Assets tables and panels. Use each view's reset control to restore its default widths.
 
-## Scan Scope
+## First Scan
 
-Use the validation controls to scan the scope you need:
+1. Open **Tools > Project Structure Guard** and choose **Validation**.
+2. Select **Scan Whole Project** for a broad starting point. Selected-folder and selected-asset scans are also available.
+3. Check scanned asset count, finding count, errors/warnings and baseline state.
+4. Combine **Severity**, **Type**, **State** and **Options** filters with results Search.
+5. Select a finding and review its main details and optional Advanced Details.
+6. For a supported rename/move workflow, inspect the preview's Ready/Blocked/Skipped/Conflict statuses before applying anything.
 
-| Action | Scope |
-|---|---|
-| **Scan Whole Project** | Scans project content under `/Game` |
-| **Scan Selected Folder** | Scans the selected Content Browser folder |
-| **Scan Selected Assets** | Scans only selected Content Browser assets |
+## Configure Rules
 
-Scoped validation can also be started from supported Content Browser actions.
+The global defaults are starter naming conventions, not a substitute for project review. Configure rules under **Project Settings > Project Structure Guard**, or use **Rules** and the built-in presets.
 
----
+For different content areas, add **Scoped Policies** for `/Game/...` folder paths. More specific scopes can replace individual policy categories while inheriting others. Read the [Scoped Policies guide](10_Policies_Inspector_Diagnostics.md) before relying on intentional empty overrides.
 
-## Your First Scan
+To understand why an asset receives a particular rule, use **Inspector**. To check the rule setup itself, use **Policy Diagnostics**. Both are read-only.
 
-1. Open **Tools → Project Structure Guard**.
-2. Click **Scan Whole Project**.
-3. Wait for the scan to complete.
-4. Review the findings in the Validation Results list.
-5. Use Search and the existing filters to narrow the result set.
-6. Select a finding to inspect its Result Details.
-7. Preview supported rename or move operations before execution.
+## Baselines for Existing Projects
 
----
+An accepted baseline helps distinguish **New** from **Existing** findings. It is not a remediation record.
 
-## Search and Filters
+- **Create Baseline** requires a missing file.
+- **Update Baseline** is a separate explicit operation that can accept new findings.
+- **Review Baseline** explains stored/matched/unmatched entries and uncertainty.
+- **Remove Selected Baseline Entries** operates only on selected unmatched entries after a safe whole-project review and confirmation. It does **not** fix assets.
+- **Adopt Project** guides an initial scan, findings review, baseline status review and eligible creation/retention actions.
 
-Validation Results Search is case-insensitive and works together with the existing filters.
+See [Baseline Review and Adoption](11_Baselines_Adoption.md).
 
-Search can match information including:
+## CI and Reporting
 
-- Asset name and asset path
-- Current path
-- Description
-- Expected and actual values
-- Suggested name or folder
-- Block reason
-- Asset class
-- Rule display name
-- Issue type, severity, and baseline state labels
-
-Filters and Search are combined, so you can progressively narrow larger result sets.
-
----
-
-## Result Details
-
-Selecting a single finding opens the Result Details inspector.
-
-The main details include:
-
-- Asset
-- Asset Class
-- Package Path
-- Issue Type
-- Severity
-- Issue State
-- Description
-- Suggested Fix
-- Expected Value
-- Actual Value
-- Auto-Fixable
-- Protected
-- Block Reason
-
-**Advanced Details** keeps lower-level rule and issue identity information available without cluttering the main inspector.
-
----
-
-## Baseline Basics
-
-A baseline captures an accepted validation state so future scans can distinguish newly introduced issues from already known findings.
-
-Findings can be classified as:
-
-- **New** — introduced after the accepted baseline
-- **Existing** — already present in the baseline
-- **Resolved** — baseline findings that no longer exist
-- **Unclassified** — no applicable baseline classification
-
-A practical workflow is:
-
-1. Bring the project to an accepted state.
-2. Create or update the baseline.
-3. Continue normal development.
-4. Filter future scans by **New** to focus on newly introduced structural violations.
-
----
-
-## Protected Paths
-
-Protected Paths allow important folders to remain visible in validation while blocking rename, move, and applicable auto-fix operations that would modify protected content.
-
-When an operation is blocked, Project Structure Guard keeps the finding visible and exposes the reason in the result/preflight information.
-
----
+Use `PSGValidate` for headless scans and CSV/JSON exports. v1.3 introduces explicit **Development**, **PullRequest** and **Release** gates; existing legacy `-failonerror/-failonwarning/-failonnew` jobs remain supported. See [CI/CD Commandlet](07_Commandlet.md).
 
 ## Next Steps
 
-- [Validation](03_Validation.md) — rules, search, filters, baselines, protected paths, On-Save Validation
-- [Auto-Fix & Bulk Preview](04_Auto_Fix.md) — rename/move previews and safety states
-- [Rule Manager](05_Rule_Manager.md) — ordering, search/filter, Test Rule, presets, JSON sharing
-- [Unused Assets](06_Unused_Assets.md) — Quarantine, Restore, and guarded deletion
-- [CI/CD Commandlet](07_Commandlet.md) — automated validation and `-failonnew`
+- [Validation details](03_Validation.md)
+- [Rule Manager and Impact Preview](05_Rule_Manager.md)
+- [Auto-Fix and Bulk Preview](04_Auto_Fix.md)
+- [Unused Assets](06_Unused_Assets.md)
+- [Policies, Inspector and Diagnostics](10_Policies_Inspector_Diagnostics.md)
+- [Baselines and Adoption](11_Baselines_Adoption.md)
