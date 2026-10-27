@@ -1,133 +1,84 @@
-# 07 — CI/CD Commandlet
+# 07 - CI/CD Commandlet
 
-> This page describes **Project Structure Guard v1.2.0 for Unreal Engine 5.8**.
+> Documentation for the upcoming **Project Structure Guard v1.3.0** on Unreal Engine 5.8. The public Fab version remains v1.2.0 until the update is approved and available.
 
 ## Overview
 
-Project Structure Guard includes a headless validation commandlet for CI/CD and automated project checks.
+`PSGValidate` uses the existing project naming/folder rule configuration, scoped policies, scan, validation and baseline systems. It writes machine-readable CSV/JSON reports and returns exit codes suitable for CI. It does not apply fixes.
 
-The commandlet can:
+## Basic Command
 
-- Scan project content without opening the normal editor UI
-- Export CSV and JSON reports
-- Fail on Error-severity findings
-- Fail on Warning findings
-- Fail only when findings are **New** relative to the configured baseline
+On Windows, using the UE 5.8 editor commandlet executable:
 
----
-
-## Basic Usage
-
-```bash
-UnrealEditor-Cmd.exe "[YourProject].uproject" -run=PSGValidate
+```powershell
+& "E:\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "C:\Projects\MyGame\MyGame.uproject" -run=PSGValidate -unattended -nop4 -nosplash
 ```
 
-Use the command-line executable appropriate for your Unreal Engine installation and platform.
+Adapt executable and project paths to your installation. Run it against the desired project configuration; the plugin must be installed and enabled for that project.
 
----
+## v1.3 CI Gate Profiles
 
-## Main Options
+Select a profile **explicitly** with `-profile=...`:
 
-| Flag | Description |
+| Value | Gate contract |
 |---|---|
-| `-outputjson=<path>` | Write a JSON validation report to the specified path |
-| `-outputcsv=<path>` | Write a CSV validation report to the specified path |
-| `-failonerror` | Return a failing exit code when Error-severity findings are present |
-| `-failonwarning` | Return a failing exit code when Warning/Error findings trigger the policy |
-| `-failonnew` | Return a failing exit code when New baseline-aware findings are present |
-| `-scanpath=<path>` | Limit the scan to a package path such as `/Game/Characters` |
-| `-quiet` | Reduce per-finding commandlet log output |
+| `Development` | Generate validation results without failing solely because findings exist. |
+| `PullRequest` | Fail on **New** findings (exit 1). Requires a readable, valid baseline; otherwise exit 2. |
+| `Release` | Fail on current **Error** findings (exit 1); warnings alone do not fail this gate. A baseline is optional. |
+| `ProjectDefault` | Explicitly use the `DefaultCIGateProfile` configured in Project Settings (code default: `PullRequest`). This selects a profile; it is not a separate gate policy. |
 
----
+**No implicit profile:** Without `-profile`, PSG preserves the existing legacy commandlet flag behavior. Selecting a project default in settings does not silently change old automation jobs.
 
-## Baseline-Aware `-failonnew`
+## Usage Examples
 
-`-failonnew` is intended for teams that want CI to block newly introduced structural problems without failing continuously because of already accepted legacy findings.
+```powershell
+# Development reporting
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate -profile=Development -unattended -nop4
 
-Typical workflow:
+# PR gate with a committed, valid baseline
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate -profile=PullRequest -outputcsv="Saved/PSGReports/pr.csv" -unattended -nop4
 
-1. Create or update the accepted Project Structure Guard baseline in the editor.
-2. Keep the project-relative baseline file in source control where appropriate.
-3. Run the commandlet with `-failonnew` in CI.
-4. Existing accepted findings remain distinguishable from newly introduced findings.
-5. CI fails when New findings trigger the policy.
+# Release error gate
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate -profile=Release -outputjson="Saved/PSGReports/release.json" -unattended -nop4
 
-If no applicable baseline classification is available, review the commandlet output and baseline configuration before relying on `-failonnew` as a gate.
-
----
-
-## Examples
-
-### Fail on errors
-
-```bash
-UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate -failonerror
+# Explicit project-configured profile
+UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate -profile=ProjectDefault -unattended -nop4
 ```
 
-### Export JSON and CSV
+## Legacy Options
 
-```bash
-UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate \
-  -outputjson="Saved/PSGReports/psg.json" \
-  -outputcsv="Saved/PSGReports/psg.csv"
-```
+| Flag | Meaning |
+|---|---|
+| `-failonerror` | Legacy failure policy for Error findings |
+| `-failonwarning` | Legacy failure policy for Warning findings |
+| `-failonnew` | Legacy baseline-aware failure policy for New findings |
+| `-scanpath=/Game/Folder` | Limit scanning to a particular internal package folder |
+| `-outputcsv=<path>` | Explicit CSV report path |
+| `-outputjson=<path>` | Explicit JSON report path |
+| `-quiet` | Reduce per-finding log detail |
 
-### Baseline-aware CI validation
+Do **not** combine `-profile` with `-failonerror`, `-failonwarning` or `-failonnew`. Invalid, duplicated or conflicting profile arguments fail with exit **2**.
 
-```bash
-UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate \
-  -outputjson="Saved/PSGReports/psg.json" \
-  -outputcsv="Saved/PSGReports/psg.csv" \
-  -failonnew \
-  -quiet \
-  -unattended \
-  -nop4
-```
+A `-scanpath` restriction produces a scoped scan. It does not by itself prove whole-project compliance. Use a full scan where the CI policy is intended to cover the full project.
 
-### Scan a subfolder
+## Process Exit Codes
 
-```bash
-UnrealEditor-Cmd.exe "MyGame.uproject" -run=PSGValidate \
-  -scanpath=/Game/Characters \
-  -failonerror
-```
+| Exit | Interpretation |
+|---|---|
+| `0` | Validation completed and the active gate passed |
+| `1` | Validation completed but a configured finding gate rejected the results |
+| `2` | Invalid/conflicting arguments or another required CI prerequisite/reporting operation failed in profile mode |
 
----
+**Exit 1 is not necessarily a plugin crash.** A correctly functioning PullRequest gate can reject new findings. For PullRequest, an invalid/missing required baseline is a configuration/prerequisite error, not an automatic acceptance of findings.
 
-## Reports
+Profile-mode explicit report-output failures are treated as errors. In legacy mode, existing output/recovery behaviors are preserved for compatibility.
 
-The v1.2 CSV/JSON reports contain richer validation context than earlier releases, including information such as:
+## Baseline and Source Control
 
-- Severity
-- Asset/path data
-- Issue type and description
-- Suggested fix information
-- Auto-fixability
-- Baseline/issue state
-- Rule and issue identity
-- Expected and actual values
-- Protection information
-- Block reasons
+Keep your baseline JSON and shared policy settings in source control where appropriate. Review updates explicitly. A changed issue identity after a rename, move or rule edit may be classified differently, even when the underlying project issue remains.
 
-Use the machine-readable report formats for CI artifacts, review, or downstream tooling.
+See [Baseline Review and Adoption](11_Baselines_Adoption.md) and [Scoped Policies](10_Policies_Inspector_Diagnostics.md).
 
----
+## Safety Notes
 
-## Exit Behavior
-
-A non-zero result can be an expected policy outcome rather than an internal plugin failure.
-
-For example, a run with `-failonnew` should return a failing result when New findings are detected. CI should treat that as a validation gate failure and surface the generated report/log to the team.
-
-Internal commandlet errors should be investigated separately from policy-driven validation failures.
-
----
-
-## CI Recommendations
-
-- Keep the Unreal Engine version used by CI aligned with the plugin package.
-- For v1.2.0, run the commandlet with **UE 5.8**.
-- Store baseline/rule configuration in source control when using shared team policies.
-- Archive the JSON/CSV report when a validation gate fails.
-- Prefer `-failonnew` when adopting PSG in an existing project with accepted legacy violations.
-- Re-run the same command locally when diagnosing CI-only differences.
+The commandlet reports findings and does not modify assets as part of ordinary validation. Run automation with the same UE 5.8 version and the same rules/baseline paths across team machines. Archive the CSV/JSON results and the commandlet log for debugging.

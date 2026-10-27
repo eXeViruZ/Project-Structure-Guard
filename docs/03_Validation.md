@@ -1,6 +1,6 @@
 # 03 — Validation
 
-> This page describes **Project Structure Guard v1.2.0 for Unreal Engine 5.8**.
+> This page describes **Project Structure Guard v1.3.0 release preparation for Unreal Engine 5.8 (not yet publicly available on Fab)**.
 
 ## How Validation Works
 
@@ -104,7 +104,7 @@ Findings can be classified as:
 |---|---|
 | **New** | The finding was introduced after the baseline |
 | **Existing** | The finding already exists in the accepted baseline |
-| **Resolved** | A baseline finding is no longer present |
+| **Resolved** | A stored finding identity was not matched by the scan (not proof of remediation) |
 | **Unclassified** | No applicable baseline state could be assigned |
 
 Project Structure Guard provides controls to create, update, clear, and inspect baseline status.
@@ -150,3 +150,23 @@ This keeps validation integrated into the normal editor workflow instead of rely
 - [Auto-Fix & Bulk Preview](04_Auto_Fix.md)
 - [Rule Manager](05_Rule_Manager.md)
 - [CI/CD Commandlet](07_Commandlet.md)
+
+---
+
+## v1.3 Scoped Validation and Effective Rules
+
+Project Structure Guard v1.3 resolves per-folder Scoped Policies before checking applicable Naming Rules, Folder Rules, Excluded Paths and Protected Paths. Scoped overrides can change which findings a global rule produces in a specific area; independent categories can inherit from parent scopes. For a specific asset or folder, the **Inspector** tab explains the winning policy, rule provenance and relevant exclusion/protection reasons. **Policy Diagnostics** checks selected configuration problems without scanning assets or changing settings.
+
+See [Scoped Policies, Inspector and Diagnostics](10_Policies_Inspector_Diagnostics.md).
+
+## v1.3 Baseline Review and Safety
+
+The historical **Resolved** comparison label must not be interpreted as verified remediation. A baseline entry that is absent from a current scan may have changed identity due to a rename, move or rule change. Partial scans do not prove whole-project absence.
+
+After a fresh whole-project scan, **Review Baseline** shows Stored, Existing, New, Unmatched and Held/Uncertain counts with hold reasons and policy-freshness cues. You can selectively remove unmatched stored entries using a separate explicit confirmation, but **that removes only tracking entries, never fixes assets and never implicitly accepts New findings**. Partial, stale or unsafe review states block removal.
+
+**Create Baseline** is for a missing file only. Use the separate **Update Baseline** workflow when intentionally accepting or changing an existing baseline. See [Baseline Review and Adoption](11_Baselines_Adoption.md).
+
+## Resizable Validation Layout
+
+The Validation Results/Details and Baseline Review/Results splitters, along with supported result columns including Severity, Type and State, can be resized and remembered for the local user/project. **Reset Layout** restores the view defaults without modifying findings, rules, assets or the baseline.

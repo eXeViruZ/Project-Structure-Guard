@@ -1,75 +1,56 @@
-# 01 — Installation
+# 01 - Installation and Updating
 
-## Requirements
+> **v1.3.0 release preparation.** PSG v1.2.0 remains publicly available on Fab until the new version is approved and live.
 
-For the current release line:
+## Engine and Platform Requirements
 
-- **Project Structure Guard v1.2.0**
-- **Unreal Engine 5.8**
-- Windows, Mac, or Linux
-- Editor-only — no runtime gameplay dependency
+- **v1.3.0 (pending)** and **v1.2.0 (public)**: Unreal Engine **5.8**, editor-only C++ plugin.
+- **v1.1.1**: the earlier Unreal Engine **5.7** compatible release.
+- Descriptor platforms: **Win64, Mac and Linux**. The v1.3 package has been built on Win64; this documentation does not certify native Mac/Linux builds.
+- The v1.3 **Adopt Project > Create Initial Baseline** write path requires a supported local Windows physical filesystem. It is restricted on Mac/Linux or unsupported sandbox/network filesystem paths.
+- No runtime gameplay component is required for packaged games.
 
-> Unreal Engine 5.7 remains supported through the earlier **v1.1.1** release. Do not install the v1.2.0 package into UE 5.7.
+## Install through Fab
 
----
+1. Open **Project Structure Guard** in your Fab library or the [Fab listing](https://www.fab.com/listings/7dfc5ec6-1261-4f86-8e69-82ea0ae1e8a2).
+2. In Epic Games Launcher, locate the Fab Library entry and choose the package compatible with your installed Unreal Engine.
+3. Install to the desired engine and start Unreal Editor.
+4. Open **Edit > Plugins**, enable **Project Structure Guard**, and restart if prompted.
 
-## Install from Fab
+Do not expect the v1.3 package to be available until Fab finishes publishing the submitted version.
 
-1. Purchase or open **Project Structure Guard** in your Fab library.
-2. Open the Epic Games Launcher.
-3. Go to **Library → Fab Library**.
-4. Find **Project Structure Guard**.
-5. Install the version that matches your Unreal Engine installation:
-   - **v1.2.0 for UE 5.8**
-   - **v1.1.1 for UE 5.7**
+## Manual Installation
 
----
+1. Extract the provided plugin package.
+2. Place the folder containing `ProjectStructureGuard.uplugin` into exactly one of:
+   - `[YourProject]/Plugins/ProjectStructureGuard/`, or
+   - `[UnrealEngine]/Engine/Plugins/ProjectStructureGuard/`.
+3. Avoid duplicate engine-wide and project-local PSG installations, or mixed previous/new versions on Unreal plugin search paths.
+4. If using a source-only archive, allow Unreal Engine to compile the plugin for your host as required.
+5. Start the editor, enable PSG and restart when requested.
 
-## Install Manually (ZIP)
+## Open PSG
 
-1. Download the plugin package for your Unreal Engine version.
-2. Extract the ZIP. You will get a `ProjectStructureGuard` plugin folder.
-3. Copy that folder into one of the following locations:
-   - **Engine-wide:** `[UE Install]/Engine/Plugins/ProjectStructureGuard/`
-   - **Project-only:** `[YourProject]/Plugins/ProjectStructureGuard/`
-4. Restart the Unreal Editor.
+In Unreal Editor choose **Tools > Project Structure Guard**. The plugin provides **Validation**, **Unused Assets**, **Rules**, **Inspector**, **Policy Diagnostics** and **Adopt Project** tabs.
 
-Do not keep two different Project Structure Guard versions installed in locations that Unreal can load at the same time.
+## Upgrade from v1.2.0 to v1.3.0
 
----
+No asset-content migration is part of the documented v1.3 update. However, the release adds policy and baseline workflows, so review settings rather than assuming old and new policy configurations are interchangeable.
 
-## Enable the Plugin
+1. Commit or back up your project and the active PSG settings and baseline JSON.
+2. Close Unreal Editor and remove/replace the **old plugin install only**. Do not delete project settings or baselines.
+3. Install the correct UE 5.8 package and reopen the project.
+4. Open **Project Settings > Project Structure Guard**. Check global naming/folder rules, excluded/protected paths, any Scoped Policies, the configured baseline path, and the CI Default Profile.
+5. Run **Scan Whole Project** and inspect the **Baseline Review** and **Policy Diagnostics** results.
+6. Use **Inspector** to review effective policies in representative folders before performing rename/move/cleanup operations.
+7. If adopting a previously untracked project, use **Adopt Project**. Existing baselines are **not** overwritten by Create Initial Baseline or the normal Create Baseline control.
+8. If existing CI jobs use legacy `-failon...` flags, they retain the legacy behavior unless you deliberately add `-profile=...`.
 
-1. Open your project in Unreal Editor.
-2. Go to **Edit → Plugins**.
-3. Search for **Project Structure Guard**.
-4. Enable the plugin.
-5. Restart the editor if prompted.
+Do not delete historical baseline JSONs or quarantine data as part of an ordinary plugin update. If a baseline changes unexpectedly, investigate the path/identity before selecting any write action.
 
----
+## Further Reading
 
-## Open the Tool
-
-After restart, open the tool via:
-
-```text
-Tools → Project Structure Guard
-```
-
-The Project Structure Guard window can be docked into the Unreal Editor layout.
-
----
-
-## Updating from an Earlier Version
-
-Updating to Project Structure Guard v1.2.0 does **not** require asset migration.
-
-Before updating an active production project, it is still recommended to:
-
-1. Commit or back up your project configuration.
-2. Close the Unreal Editor.
-3. Replace the older plugin installation with the UE 5.8 v1.2.0 package.
-4. Reopen the project and confirm the plugin loads normally.
-5. Review your Project Structure Guard settings, rules, protected paths, and baseline configuration before running structural fixes.
-
-Project rules and baseline data can be kept in source control when stored in project-relative locations.
+- [Getting Started](02_Getting_Started.md)
+- [Scoped Policies and Inspector](10_Policies_Inspector_Diagnostics.md)
+- [Baseline Review and Adoption](11_Baselines_Adoption.md)
+- [Troubleshooting](08_Troubleshooting.md)

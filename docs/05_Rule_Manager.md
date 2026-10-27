@@ -1,6 +1,6 @@
 # 05 — Rule Manager
 
-> This page describes **Project Structure Guard v1.2.0 for Unreal Engine 5.8**.
+> This page describes **Project Structure Guard v1.3.0 release preparation for Unreal Engine 5.8 (not yet publicly available on Fab)**.
 
 ## Overview
 
@@ -108,3 +108,23 @@ A recommended workflow is:
 6. Review rule changes like any other project configuration change.
 
 Baseline data can also be stored in a project-relative location for source-control workflows.
+
+---
+
+## v1.3: Scoped Policies
+
+Global naming/folder rules remain the fallback. **Project Settings > Project Structure Guard** also supports independent per-folder **Scoped Policies** for Naming Rules, Folder Rules, Excluded Paths and Protected Paths. A more specific matching scope can override one category while inheriting other categories. An explicitly enabled empty override intentionally clears the inherited category. See [Scoped Policies, Inspector and Diagnostics](10_Policies_Inspector_Diagnostics.md).
+
+The Rules tab primarily presents **global** naming/folder rule ordering, enabling and testing. Do not confuse the global list with the full effective policy inside a scoped folder. Use **Inspector** to see the effective result for a selected path.
+
+## v1.3: Preview Toggle Impact
+
+Select exactly one existing global Naming Rule or Folder Rule and choose **Preview Toggle Impact**. The read-only preview uses the existing project scan/validation logic to compare findings before and after a hypothetical Enabled toggle. It reports Added, No longer reported, Unchanged, affected assets, and applicable first-match rule changes.
+
+The preview does not alter the rule, assets, baseline or settings. It does not support modifying rule signatures, drafting new rules or previewing scoped overrides. “No longer reported” is not evidence that an underlying asset was fixed.
+
+## Replacing Rulesets Safely
+
+In v1.3, choosing a built-in preset or JSON rule import presents an explicit replacement confirmation. **Cancel** does not apply the replacement. A confirmed replacement can change rule order, identities and the baseline classification of findings; keep a backup/export of important project rules and review any baseline impact before accepting changes.
+
+The Rules view supports locally persistent Naming/Folder table column widths and split ratios, with **Reset Rules Layout** to restore defaults. Layout storage is per user/project and separate from shared rule settings.
