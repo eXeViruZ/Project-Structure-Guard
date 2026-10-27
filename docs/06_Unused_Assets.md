@@ -1,6 +1,6 @@
 # 06 — Unused Asset Cleanup
 
-> This page describes **Project Structure Guard v1.2.0 for Unreal Engine 5.8**.
+> This page describes **Project Structure Guard v1.3.0 release preparation for Unreal Engine 5.8 (not yet publicly available on Fab)**.
 
 ## Overview
 
@@ -20,7 +20,7 @@ Project Structure Guard v1.2 emphasizes review and recovery instead of immediate
 
 The scanner uses Unreal asset dependency/reference information to identify unused candidates.
 
-The v1.2 workflow avoids mixing normal cleanup candidates with content that should not be treated as ordinary unused assets, including generated Blueprint artifacts, redirectors, and managed quarantine content.
+The established workflow avoids mixing normal cleanup candidates with content that should not be treated as ordinary unused assets, including generated Blueprint artifacts, redirectors, and managed quarantine content.
 
 A scan result is a cleanup candidate, not a guarantee that an asset is semantically unnecessary to your game or tool.
 
@@ -62,7 +62,7 @@ After restoring content, re-run relevant validation/reference checks as part of 
 
 ## Permanent Delete
 
-**Permanent Delete is intentionally guarded in v1.2.0.**
+**Permanent Delete is intentionally guarded in PSG.**
 
 Ordinary project assets cannot be directly permanently deleted through this workflow. Permanent Delete is available only for assets that are recognized as managed quarantined content and pass the required safety checks.
 
@@ -98,3 +98,13 @@ Always treat the unused scanner as a project-cleanup aid, not as proof that cont
 5. Test the project after quarantine.
 6. Restore anything that is still required.
 7. Permanently delete only managed quarantined assets after the safety checks pass and you are confident they are no longer needed.
+
+---
+
+## v1.3 Presentation and Scope Safety
+
+The Unused Assets view has clearer action/selection presentation and resizable Asset, Class, Path and Size columns. Column layouts can persist locally per user/project; **Reset Unused Layout** restores the defaults. Layout changes do not alter assets or project policy.
+
+The **Quarantine** action presents explicit confirmation and rechecks the selected set before proceeding. Effective excluded/protected path policies may prevent an operation that looks otherwise applicable. A successful scan is still only a candidate list, never proof that dynamically loaded content is safe to delete.
+
+The managed Restore and guarded Permanent Delete contracts remain separate from ordinary unused candidate selection. Do not attempt permanent deletion of normal non-quarantined assets through this workflow.
