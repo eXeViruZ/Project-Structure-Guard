@@ -1,38 +1,36 @@
-# Project Structure Guard — Documentation
+# Project Structure Guard - Documentation
 
-> Current documentation: **Project Structure Guard v1.2.0 | Unreal Engine 5.8 | Editor-only**
->
-> Unreal Engine 5.7 remains supported through the earlier v1.1.1 release. v1.2.0 itself targets Unreal Engine 5.8 only.
+> **v1.3.0 documentation preview** for UE 5.8. The v1.3.0 update is not yet publicly available on Fab. The latest published PSG release is v1.2.0; v1.1.1 is the older UE 5.7 line.
 
----
+## Guides
 
-## Contents
+| Page | Topic |
+|---|---|
+| [01 - Installation](01_Installation.md) | Compatibility, installation and updates |
+| [02 - Getting Started](02_Getting_Started.md) | Six-tab tour and first project scan |
+| [03 - Validation](03_Validation.md) | Rules, result states, filters and On-Save Validation |
+| [04 - Auto-Fix & Bulk Preview](04_Auto_Fix.md) | Safe rename/move operations and redirectors |
+| [05 - Rule Manager](05_Rule_Manager.md) | Priority, presets, import/export and impact preview |
+| [06 - Unused Assets](06_Unused_Assets.md) | Quarantine, Restore and guarded deletion |
+| [07 - CI/CD Commandlet](07_Commandlet.md) | Development, PullRequest and Release gates |
+| [08 - Troubleshooting](08_Troubleshooting.md) | Diagnostics, baselines, CI and safe recovery |
+| [09 - Changelog](09_Changelog.md) | Differences between public releases |
+| [10 - Scoped Policies, Inspector and Diagnostics](10_Policies_Inspector_Diagnostics.md) | Scoped inheritance, Inspector and preview |
+| [11 - Baseline Review and Adoption](11_Baselines_Adoption.md) | Manual reconciliation and guided project adoption |
 
-| # | File | Topic |
-|---|------|-------|
-| 1 | [01_Installation.md](01_Installation.md) | Requirements, installation, enabling, updating |
-| 2 | [02_Getting_Started.md](02_Getting_Started.md) | UI overview, first scan, search, Result Details, baseline basics |
-| 3 | [03_Validation.md](03_Validation.md) | Validation scopes, filters, search, Baseline Tracking, Protected Paths |
-| 4 | [04_Auto_Fix.md](04_Auto_Fix.md) | Rename/move workflows, Bulk Preview 2.0, preflight safety |
-| 5 | [05_Rule_Manager.md](05_Rule_Manager.md) | Rule ordering, search/filter, Test Rule, presets, JSON sharing |
-| 6 | [06_Unused_Assets.md](06_Unused_Assets.md) | Unused asset scanner, Quarantine, Restore, guarded Permanent Delete |
-| 7 | [07_Commandlet.md](07_Commandlet.md) | CI/CD validation, CSV/JSON reports, `-failonnew` |
-| 8 | [08_Troubleshooting.md](08_Troubleshooting.md) | Common issues and fixes |
-| 9 | [09_Changelog.md](09_Changelog.md) | Version history |
+## Compatibility
 
----
-
-## Version Compatibility
-
-| Plugin Version | Unreal Engine | Documentation Scope |
+| Version | Engine | Status |
 |---|---|---|
-| v1.2.0 | UE 5.8 | Current documentation |
-| v1.1.1 | UE 5.7 | Earlier supported release; some v1.2 workflows are not available |
+| v1.3.0 | UE 5.8 | Prepared, not yet released on Fab |
+| v1.2.0 | UE 5.8 | Current public release |
+| v1.1.1 | UE 5.7 | Earlier compatible release |
 
----
+The plugin descriptor lists Win64, Mac and Linux. This documentation does not assert native Mac/Linux build verification. The **Adopt Project initial baseline creation** path is restricted to supported local Windows filesystems. See [Installation](01_Installation.md) and [Baseline Review and Adoption](11_Baselines_Adoption.md).
 
-## Support
+## Links
 
-- Discord: https://discord.gg/vgpmnN6nCR
-- Product showcase: https://youtu.be/wDlVkgT0nPU
-- GitHub: https://github.com/eXeViruZ/Project-Structure-Guard
+- [Fab listing](https://www.fab.com/listings/7dfc5ec6-1261-4f86-8e69-82ea0ae1e8a2)
+- [Hanke Unreal Tools Discord](https://discord.gg/vgpmnN6nCR)
+- [GitHub Issues](https://github.com/eXeViruZ/Project-Structure-Guard/issues)
+- [Previous v1.2 showcase](https://youtu.be/wDlVkgT0nPU)
